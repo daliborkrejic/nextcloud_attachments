@@ -405,10 +405,14 @@ trait Hooks
             return ["status" => false, "abort" => true];
         }
 
-        // resolve the folder layout
-        $folder_suffix = $this->resolve_destination_folder($folder_uri, $data["path"], $username, $password);
-        $folder .= "/".$folder_suffix;
-        $folder_uri .= "/".$folder_suffix;
+        
+        // resolve the folder layout - only when folder_layout is not "flat"
+        $folder_layout = $this->rcmail->config->get(__("folder_layout"), "flat");
+        if ($folder_layout !== "flat") {
+            $folder_suffix = $this->resolve_destination_folder($folder_uri, $data["path"], $username, $password);
+            $folder .= "/".$folder_suffix;
+            $folder_uri .= "/".$folder_suffix;
+        }
         self::log($folder_uri);
 
         //get unique filename
